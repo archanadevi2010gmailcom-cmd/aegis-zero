@@ -1,3 +1,4 @@
+
 # 🛡️ Aegis Zero
 
 **Autonomous DevSecOps remediation agent built on TrueForge**
@@ -28,3 +29,109 @@ Open `index.html` in your browser for the full web UI:
 ---
 
 ## 🏗️ Architecture
+
+User → Web UI (index.html)
+↓
+TrueForge Agent (agent.js)
+↓
+┌────────────┬─────────────┐
+│ scanner.js │ patcher.js │
+│ (detect) │ (fix code) │
+└────────────┴─────────────┘
+↓
+Human Approval Checkpoint
+↓
+GitHub API → Real Commit
+
+
+---
+
+## 🔍 Vulnerabilities Detected
+
+| Type | Severity | Fix Applied |
+|------|----------|-------------|
+| SQL Injection | HIGH | Parameterized queries |
+| Hardcoded Secrets | HIGH | Environment variables |
+| Command Injection | HIGH | Safe alternatives |
+
+---
+
+## 🛠️ Tech Stack
+
+- **TrueForge** — Agent orchestration, tool execution, sandboxing, human-in-the-loop
+- **Qodo** — Automated PR code review and quality checks
+- **GitHub MCP** — Real Git commits via GitHub REST API
+- **Node.js** — Agent runtime and tool scripts
+- **HTML/CSS/JS** — Web UI dashboard
+
+---
+
+## ⚙️ Setup & Run
+
+### Prerequisites
+- Node.js 18+
+- WSL (Ubuntu) or Linux
+- TrueForge CLI installed
+- GitHub Personal Access Token
+
+### Installation
+
+```bash
+git clone https://github.com/archanadevi2010gmailcom-cmd/aegis-zero.git
+cd aegis-zero
+npm install
+```
+
+### Run the Agent
+
+```bash
+trueforge run agent.js
+```
+
+### Open the Web UI
+
+Open `index.html` in your browser directly.
+
+---
+
+## 🤖 How TrueForge Powers This
+
+TrueForge is the core of Aegis Zero. It:
+- **Orchestrates** the full scan → patch → test → commit pipeline
+- **Sandboxes** all tool execution safely
+- **Enforces human-in-the-loop** — the agent cannot commit without explicit approval
+- **Spawns sub-agents** for specialized tasks (file writing, GitHub operations)
+- **Connects tools** — scanner, patcher, and GitHub MCP work together seamlessly
+
+---
+
+## 🔎 How Qodo Improves Code Quality
+
+Every pull request is automatically reviewed by Qodo, which:
+- Flags security anti-patterns
+- Suggests safer alternatives
+- Verifies the patch doesn't introduce new issues
+- Ensures test coverage for fixed vulnerabilities
+
+---
+
+## 📁 Project Structure
+
+aegis-zero/
+├── agent.js # Main TrueForge agent
+├── index.html # Web UI dashboard
+├── tools/
+│ ├── scanner.js # Vulnerability detection
+│ └── patcher.js # Secure patch generation
+├── vulnerable_app.py # Demo target (intentionally vulnerable)
+├── patched_app.py # Output after agent fixes
+└── README.md
+
+
+---
+
+## 👤 Built By
+
+**Aryan** — Solo submission for the Agent Harness Hackathon by WeMakeDevs × TrueForge
+
+*Built with TrueForge, Qodo, and a lot of chai ☕*
