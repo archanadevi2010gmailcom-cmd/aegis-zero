@@ -5,15 +5,18 @@ function patchFile(filePath) {
   let patches = [];
 
   // Fix SQL injection — replace string concatenation with parameterized query
-  // Added leading whitespace (\s*) and fixed quote handling:
-  // Changed the optional quote after the equals to required, and used non-greedy match for the second string literal.
-  const sqlPattern = /\s*query\s*=\s*["']SELECT \* FROM users WHERE username = ["']\s*\+\s*username\s*\+\s*["'].*?["']\s*\ncursor\.execute\(query\)\s*/;
+  // Now handles both cases: with or without following cursor.execute line
+  const sqlPattern = /(\s*query\s*=\s*["']SELECT \* FROM users WHERE username = ["']\s*\+\s*username\s*\+\s*["'].*?["'])(\s*\n\s*cursor\.execute\(query\)\s*)?/;
   if (sqlPattern.test(code)) {
-    code = code.replace(
-      sqlPattern,
-      `query = "SELECT * FROM users WHERE username = ?"\ncursor.execute(query, (username,))`
-    );
-    patches.push("Fixed SQL injection — switched to parameterized query");
+    code = code.replace(sqlPattern, (match, p1, p2) => {
+      let newAssignment = `query = "SELECT * FROM users WHERE username = ?"`;
+      if (p2) {
+        return newAssignment + "\ncursor.execute(query, (username,))"
+      } else {
+        return newAssignment
+      }
+    })
+    patches.push("Fixed SQL injection — switched to parameterized query")
   }
 
   // Fix hardcoded secrets — replace with os.environ
@@ -23,19 +26,18 @@ function patchFile(filePath) {
     { var: 'api_key', env: 'APP_API_KEY' }
   ];
   for (const { var: v, env: e } of secretPatterns) {
-    const regex = new RegExp(`\\b${v}\\b\\s*=\\s*["'][^"']+["']`, 'i');
+    const regex = new RegExp(`\\b${v}\\b\\s*=\\s*["'][^"']+["']`, 'i')
     if (regex.test(code)) {
-      // Add os import if not present
       if (!code.includes("import os")) {
-        code = "import os\n" + code;
+        code = "import os\n" + code
       }
-      code = code.replace(regex, `${v} = os.environ.get("${e}")`);
-      patches.push(`Fixed hardcoded ${v} — moved to environment variable`);
+      code = code.replace(regex, `${v} = os.environ.get("${e}")`)
+      patches.push(`Fixed hardcoded ${v} — moved to environment variable`)
     }
   }
 
   // Return the patched code and patches for approval (don't write directly)
-  return { filePath, patches, newCode: code };
+  return { filePath, patches, newCode: code }
 }
 
-module.exports = { patchFile };
+module.exports = { patchFile }
