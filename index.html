@@ -3,232 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aegis Zero – DevSecOps UI</title>
+    <title>Aegis AI - Security Agent</title>
     <style>
         :root {
-            --bg-dark: #0d1117;
-            --bg-surface: #161b22;
-            --bg-muted: #21262d;
-            --border: #30363d;
-            --text-primary: #f0f6fc;
-            --text-muted: #8b949e;
-            --accent: #58a6ff;
-            --danger: #f85149;
-            --success: #3fb950;
-            --warning: #d29922;
-            --radius: 6px;
+            --bg-sidebar: #070a12;
+            --bg-main: #0b0f19;
+            --bg-input: #101728;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.15);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --chip-bg: rgba(255, 255, 255, 0.03);
+            --chip-hover: rgba(255, 255, 255, 0.08);
         }
-        * { box-sizing: border-box; margin:0; padding:0; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg-dark); color: var(--text-primary); padding: 2rem; }
-        h1 { font-size: 1.8rem; margin-bottom: 1.5rem; }
-        h2 { font-size: 1.1rem; margin-bottom: 1rem; }
-        .container { max-width: 960px; margin: 0 auto; }
-        .panel { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1.5rem; }
-        label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-muted); }
-        textarea { width: 100%; min-height: 180px; padding: 0.75rem; background: var(--bg-dark); color: var(--text-primary); border: 1px solid var(--border); border-radius: var(--radius); font-family: monospace; font-size: 0.9rem; resize: vertical; }
-        button { padding: 0.6rem 1.2rem; font-size: 0.9rem; font-weight: 600; border: none; border-radius: var(--radius); cursor: pointer; }
-        .btn-primary { background: var(--accent); color: var(--bg-dark); }
-        .btn-success { background: var(--success); color: var(--bg-dark); }
-        .btn-muted { background: var(--bg-muted); color: var(--text-primary); border: 1px solid var(--border); }
-        .button-group { display: flex; gap: 0.75rem; margin-top: 1rem; flex-wrap: wrap; }
-        .badge { display: inline-block; padding: 0.25rem 0.75rem; font-size: 0.8rem; font-weight: 600; border-radius: 9999px; margin: 0.25rem; }
-        .badge-danger { background: var(--danger); color: white; }
-        .badge-success { background: var(--success); color: var(--bg-dark); }
-        .diff-view { background: var(--bg-dark); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; font-family: monospace; white-space: pre-wrap; font-size: 0.85rem; max-height: 300px; overflow: auto; margin-top: 1rem; }
-        .line-add { background: rgba(63,185,80,0.2); display: block; }
-        .line-rem { background: rgba(248,81,73,0.2); display: block; }
-        .status { padding: 0.75rem 1rem; border-radius: var(--radius); font-size: 0.9rem; margin-top: 0.5rem; }
-        .status-info { background: rgba(88,166,255,0.1); border-left: 4px solid var(--accent); }
-        .status-success { background: rgba(63,185,80,0.1); border-left: 4px solid var(--success); }
-        .status-error { background: rgba(248,81,73,0.1); border-left: 4px solid var(--danger); }
-        .status-warning { background: rgba(210,153,34,0.1); border-left: 4px solid var(--warning); }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 260px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            padding: 20px 16px;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .logo {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            padding: 0 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .new-thread-btn {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            margin-bottom: 24px;
+        }
+
+        .nav-section { display: flex; flex-direction: column; gap: 4px; }
+        .nav-item {
+            color: var(--text-secondary);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+        .nav-item:hover { background-color: rgba(255, 255, 255, 0.03); color: var(--text-primary); }
+
+        .main-chat {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .hero-section { text-align: center; margin-bottom: 40px; }
+        .hero-title {
+            font-size: 2.25rem;
+            font-weight: 500;
+            margin-bottom: 12px;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-subtitle { font-size: 1.1rem; color: var(--text-secondary); }
+
+        .input-container {
+            width: 100%;
+            max-width: 720px;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .chat-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+            resize: none;
+            min-height: 44px;
+            margin-bottom: 12px;
+        }
+
+        .input-footer { display: flex; justify-content: space-between; align-items: center; }
+        .pill-group { display: flex; gap: 8px; }
+        .pill-btn {
+            background-color: var(--chip-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+        
+        .submit-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 32px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .action-chip {
+            background-color: var(--chip-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>🛡️ Aegis Zero — Autonomous DevSecOps Agent</h1>
-
-    <div class="panel">
-        <label for="codeInput">Paste your Python code to scan:</label>
-        <textarea id="codeInput" placeholder="Paste vulnerable Python code here..."></textarea>
-        <div class="button-group">
-            <button class="btn-primary" id="scanBtn">🔍 Scan for Vulnerabilities</button>
-            <button class="btn-muted" id="patchBtn" disabled>⚙️ Generate Patch</button>
+    <aside class="sidebar">
+        <div class="logo">Aegis AI</div>
+        <button class="new-thread-btn"><span>New Thread</span></button>
+        <nav class="nav-section">
+            <a class="nav-item">💬 Security Audit</a>
+            <a class="nav-item">🔍 Code Scanner</a>
+            <a class="nav-item">🚨 Vulnerabilities</a>
+        </nav>
+    </aside>
+    <main class="main-chat">
+        <div class="hero-section">
+            <h1 class="hero-title">Good Morning</h1>
+            <p class="hero-subtitle">How can Aegis Zero help secure your repository today?</p>
         </div>
-    </div>
-
-    <div class="panel">
-        <h2>Scan Results</h2>
-        <div id="results"><span style="color: var(--text-muted);">No scan run yet.</span></div>
-    </div>
-
-    <div class="panel">
-        <h2>Patch Preview (Diff)</h2>
-        <div class="diff-view" id="diffView">No patch generated yet.</div>
-        <div class="button-group">
-            <button class="btn-success" id="approveBtn" disabled>✅ Approve &amp; Commit to GitHub</button>
+        <div class="input-container">
+            <textarea class="chat-input" placeholder="Ask Aegis Zero anything... (e.g. Scan vulnerable_app.py)" rows="1"></textarea>
+            <div class="input-footer">
+                <div class="pill-group">
+                    <button class="pill-btn">Search</button>
+                    <button class="pill-btn">TrueForge</button>
+                </div>
+                <button class="submit-btn">➔</button>
+            </div>
         </div>
-    </div>
-
-    <div class="panel">
-        <h2>Status</h2>
-        <div class="status status-info" id="statusDiv">Ready. Paste code and click Scan.</div>
-    </div>
-
-    <input type="hidden" id="fileSha" value="d97d229603d0ae069b676ca3b8fdc2041ffc8ff6">
-</div>
-
-<script>
-const codeInput = document.getElementById('codeInput');
-const scanBtn = document.getElementById('scanBtn');
-const patchBtn = document.getElementById('patchBtn');
-const approveBtn = document.getElementById('approveBtn');
-const resultsDiv = document.getElementById('results');
-const diffView = document.getElementById('diffView');
-const statusDiv = document.getElementById('statusDiv');
-const fileSha = document.getElementById('fileSha');
-
-let githubToken = null;
-let patchedCode = null;
-let findings = [];
-
-function setStatus(msg, type='info') {
-    statusDiv.textContent = msg;
-    statusDiv.className = `status status-${type}`;
-}
-
-function scanCode(code) {
-    const issues = [];
-    if (/os\.system\s*\(.*\+/.test(code) || /execute\s*\(.*\+/.test(code) || /SELECT.*\+.*username/.test(code)) {
-        issues.push({ type: 'SQL Injection / Command Injection', severity: 'HIGH', fix: 'Use parameterized queries or avoid shell concatenation' });
-    }
-    if (/api_key\s*=\s*["'][^"']+["']/i.test(code) || /password\s*=\s*["'][^"']+["']/i.test(code) || /secret\s*=\s*["'][^"']+["']/i.test(code)) {
-        issues.push({ type: 'Hardcoded Secret', severity: 'HIGH', fix: 'Move to environment variables using os.environ.get()' });
-    }
-    return issues;
-}
-
-function generatePatch(code) {
-    let patched = code;
-    const lines_orig = code.split('\n');
-    const lines_patched = [];
-
-    patched = patched.replace(
-        /query\s*=\s*["']SELECT \* FROM users WHERE username = '"?\s*\+\s*username\s*\+\s*"'["']/,
-        'query = "SELECT * FROM users WHERE username = ?"'
-    );
-    patched = patched.replace(
-        /cursor\.execute\(query\)/,
-        'cursor.execute(query, (username,))'
-    );
-    patched = patched.replace(
-        /os\.system\(["']echo ["']\s*\+\s*user_input\)/,
-        'print(user_input)'
-    );
-    if (!/import os/.test(patched)) patched = 'import os\n' + patched;
-    patched = patched.replace(/API_KEY\s*=\s*["'][^"']+["']/, 'API_KEY = os.environ.get("API_KEY")');
-    patched = patched.replace(/DB_PASSWORD\s*=\s*["'][^"']+["']/, 'DB_PASSWORD = os.environ.get("DB_PASSWORD")');
-
-    return patched;
-}
-
-function showDiff(original, patched) {
-    const orig = original.split('\n');
-    const patch = patched.split('\n');
-    let html = '';
-    const max = Math.max(orig.length, patch.length);
-    for (let i = 0; i < max; i++) {
-        const o = orig[i] ?? '';
-        const p = patch[i] ?? '';
-        if (o === p) {
-            html += `<span>  ${escHtml(o)}</span>\n`;
-        } else {
-            if (o) html += `<span class="line-rem">- ${escHtml(o)}</span>\n`;
-            if (p) html += `<span class="line-add">+ ${escHtml(p)}</span>\n`;
-        }
-    }
-    diffView.innerHTML = html;
-}
-
-function escHtml(s) {
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-function base64Encode(str) {
-    const bytes = new TextEncoder().encode(str);
-    let binary = '';
-    bytes.forEach(b => binary += String.fromCharCode(b));
-    return btoa(binary);
-}
-
-scanBtn.addEventListener('click', async () => {
-    const code = codeInput.value.trim();
-    if (!code) { setStatus('Please paste some Python code first.', 'error'); return; }
-    setStatus('Scanning code for vulnerabilities...', 'info');
-    scanBtn.disabled = true;
-    await new Promise(r => setTimeout(r, 600));
-    findings = scanCode(code);
-    if (findings.length === 0) {
-        resultsDiv.innerHTML = '<span class="badge badge-success">✅ No vulnerabilities found</span>';
-        setStatus('Code is clean. No issues found.', 'success');
-        patchBtn.disabled = true;
-    } else {
-        resultsDiv.innerHTML = findings.map(f =>
-            `<span class="badge badge-danger">🚨 ${f.type} — ${f.severity}</span><br><small style="color:var(--text-muted); margin-left:0.5rem">${f.fix}</small><br>`
-        ).join('');
-        setStatus(`Found ${findings.length} vulnerability(ies). Click Generate Patch to fix.`, 'warning');
-        patchBtn.disabled = false;
-    }
-    scanBtn.disabled = false;
-});
-
-patchBtn.addEventListener('click', async () => {
-    const code = codeInput.value.trim();
-    setStatus('Generating secure patch...', 'info');
-    patchBtn.disabled = true;
-    await new Promise(r => setTimeout(r, 800));
-    patchedCode = generatePatch(code);
-    showDiff(code, patchedCode);
-    approveBtn.disabled = false;
-    setStatus('Patch ready. Review the diff above, then approve to commit to GitHub.', 'success');
-    patchBtn.disabled = false;
-});
-
-approveBtn.addEventListener('click', async () => {
-    if (!patchedCode) { setStatus('No patch to apply.', 'error'); return; }
-    if (!githubToken) {
-        const token = prompt('Enter your GitHub Personal Access Token:');
-        if (!token) { setStatus('Token required to commit.', 'error'); return; }
-        githubToken = token;
-    }
-    setStatus('Committing patch to GitHub...', 'info');
-    approveBtn.disabled = true;
-    try {
-        const response = await fetch('https://api.github.com/repos/archanadevi2010gmailcom-cmd/aegis-zero/contents/vulnerable_app.py', {
-            method: 'PUT',
-            headers: {
-                'Authorization': `token ${githubToken}`,
-                'Content-Type': 'application/json',
-                'Accept': 'application/vnd.github.v3+json'
-            },
-            body: JSON.stringify({
-                message: 'Patch applied by Aegis Zero — fixed SQL injection and hardcoded secrets',
-                content: base64Encode(patchedCode),
-                sha: fileSha.value,
-                branch: 'main'
-            })
-        });
-        if (!response.ok) {
-            const err = await response.json();
-            throw new Error(err.message);
-        }
-        setStatus('✅ Patch committed to GitHub successfully! Check your repo.', 'success');
-    } catch(e) {
-        setStatus(`Error: ${e.message}`, 'error');
-    } finally {
-        approveBtn.disabled = false;
-    }
-});
-</script>
+        <div class="quick-actions">
+            <button class="action-chip">🛡️ Run Security Scan</button>
+            <button class="action-chip">⚙️ Review Qodo Quality</button>
+            <button class="action-chip">🚀 Open Pull Request</button>
+        </div>
+    </main>
 </body>
 </html>
