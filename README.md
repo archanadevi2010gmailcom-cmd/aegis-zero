@@ -19,12 +19,17 @@ Aegis Zero scans your Python code for security vulnerabilities, generates patche
 
 ## 🚀 Live Demo
 
-Open `index.html` in your browser for the full web UI:
-- Paste any Python code
-- Click **Scan for Vulnerabilities**
-- Review findings (SQL Injection, Hardcoded Secrets)
-- Click **Generate Patch** to see the secure diff
-- Click **Approve & Commit to GitHub** to apply the fix
+The agent runs on **TrueForge** at `localhost:8790`.
+
+**To run the demo:**
+1. Start TrueForge: `trueforge start`
+2. Open `localhost:8790` in your browser
+3. Select the `aegis-zero` agent
+4. Type: *"Scan vulnerable_app.py for security issues"*
+5. Agent scans, generates patch, and asks for your approval
+6. Approve → real commit lands on GitHub ✅
+
+**Web UI:** Open `index.html` for a standalone dashboard view of the same pipeline.
 
 ---
 
