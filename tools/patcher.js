@@ -7,11 +7,11 @@ function patchFile(filePath) {
   // Fix SQL injection — replace string concatenation with parameterized query
   // Added leading whitespace (\s*) and fixed quote handling:
   // Changed the optional quote after the equals to required, and used non-greedy match for the second string literal.
-  const sqlPattern = /\s*query\s*=\s*["']SELECT \\\* FROM users WHERE username = ["']\s*\+\s*username\s*\+\s*["'].*?["']\s*\ncursor\.execute\(query\)\s*/;
+  const sqlPattern = /\s*query\s*=\s*["']SELECT \* FROM users WHERE username = ["']\s*\+\s*username\s*\+\s*["'].*?["']\s*\ncursor\.execute\(query\)\s*/;
   if (sqlPattern.test(code)) {
     code = code.replace(
       sqlPattern,
-      `query = \"SELECT * FROM users WHERE username = ?\"\ncursor.execute(query, (username,))`
+      `query = "SELECT * FROM users WHERE username = ?"\ncursor.execute(query, (username,))`
     );
     patches.push("Fixed SQL injection — switched to parameterized query");
   }
@@ -23,22 +23,19 @@ function patchFile(filePath) {
     { var: 'api_key', env: 'APP_API_KEY' }
   ];
   for (const { var: v, env: e } of secretPatterns) {
-    const regex = new RegExp(`${v}\\s*=\\s*["'][^"']+["']`, 'i');
+    const regex = new RegExp(`\\b${v}\\b\\s*=\\s*["'][^"']+["']`, 'i');
     if (regex.test(code)) {
       // Add os import if not present
       if (!code.includes("import os")) {
         code = "import os\n" + code;
       }
-      code = code.replace(regex, `${v} = os.environ.get(\"${e}\")`);
+      code = code.replace(regex, `${v} = os.environ.get("${e}")`);
       patches.push(`Fixed hardcoded ${v} — moved to environment variable`);
     }
   }
 
-  if (patches.length > 0) {
-    fs.writeFileSync(filePath, code, "utf-8");
-  }
-
-  return { filePath, patches };
+  // Return the patched code and patches for approval (don't write directly)
+  return { filePath, patches, newCode: code };
 }
 
 module.exports = { patchFile };
